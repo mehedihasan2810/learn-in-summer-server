@@ -25,6 +25,7 @@ async function run() {
     client.connect();
 
     const classesCollection = client.db("learnInSummer").collection("classes");
+    const usersCollection = client.db("learnInSummer").collection("users");
 
     // get all classes
     app.get("/allClasses", async (req, res) => {
@@ -68,6 +69,13 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await classesCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    app.post("/addUser", async (req, res) => {
+      const userInfo = req.body;
+      console.log(userInfo);
+      const result = await usersCollection.insertOne(userInfo);
       res.send(result);
     });
 
