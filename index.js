@@ -26,6 +26,9 @@ async function run() {
 
     const classesCollection = client.db("learnInSummer").collection("classes");
     const usersCollection = client.db("learnInSummer").collection("users");
+    const selectedClassCollection = client
+      .db("learnInSummer")
+      .collection("selectedClass");
 
     // get all classes
     app.get("/allClasses", async (req, res) => {
@@ -76,6 +79,24 @@ async function run() {
       const userInfo = req.body;
       console.log(userInfo);
       const result = await usersCollection.insertOne(userInfo);
+      res.send(result);
+    });
+
+    app.post("/addSelectedClass", async (req, res) => {
+      const { email, id } = req.body;
+
+      const result = await selectedClassCollection.updateOne(
+        { email },
+        { $push: { selectedClassIds: id } },
+        { upsert: true }
+      );
+
+      res.send(result);
+    });
+
+    app.get("/getSelectedClass", async (req, res) => {
+      const result = await selectedClassCollection.find().toArray();
+
       res.send(result);
     });
 
