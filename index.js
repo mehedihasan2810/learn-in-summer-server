@@ -94,9 +94,46 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/getSelectedClass", async (req, res) => {
-      const result = await selectedClassCollection.find().toArray();
+    app.get("/getSelectedClassIds", async (req, res) => {
+      const email = req.query.email;
+      console.log(email);
+      const result = await selectedClassCollection.findOne({ email });
 
+      res.send(result);
+    });
+    app.get("/getSelectedClass", async (req, res) => {
+      const email = req.query.email;
+      const selectedResult = await selectedClassCollection.findOne({
+        email,
+      });
+
+      if (!selectedResult) {
+        res.send([]);
+        return;
+      }
+      const objectId = selectedResult?.selectedClassIds.map(
+        (id) => new ObjectId(id)
+      );
+      const result = await classesCollection
+        .find({
+          _id: {
+            $in: objectId,
+          },
+        })
+        .toArray();
+
+      res.send(result);
+    });
+
+    // delete class
+    app.delete("/deleteSelectedClass", async (req, res) => {
+      const email = req.query?.email;
+      const id = req.query?.id;
+      console.log(id, email);
+      const query = { email };
+      const result = await selectedClassCollection.updateOne(query, {
+        $pull: { selectedClassIds: id },
+      });
       res.send(result);
     });
 
