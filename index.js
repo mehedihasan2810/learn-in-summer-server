@@ -82,8 +82,39 @@ async function run() {
     app.post("/addUser", async (req, res) => {
       const userInfo = req.body;
       console.log(userInfo);
-      const result = await usersCollection.insertOne(userInfo);
-      res.send(result);
+      if (!userInfo.email) {
+        return;
+      }
+      const getUser = await usersCollection.findOne({ email: userInfo.email });
+      console.log(getUser);
+
+      if (!getUser) {
+        const result = await usersCollection.insertOne(userInfo);
+        res.send(result);
+        console.log(result);
+      } else {
+        console.log("exist");
+        res.send({ message: "user exist" });
+      }
+    });
+
+    app.get("/getUsers", async (req, res) => {
+      const getUsers = await usersCollection.find().toArray();
+
+      res.send(getUsers);
+    });
+    app.get("/getUser", async (req, res) => {
+      const email = req.query.email;
+      if (!email) {
+        res.send({ success: false });
+        return;
+      }
+      const getUser = await usersCollection.findOne({ email: email });
+      console.log(getUser);
+      if (!getUser) {
+        res.send({ success: false });
+      }
+      res.send(getUser);
     });
 
     app.post("/addSelectedClass", async (req, res) => {
