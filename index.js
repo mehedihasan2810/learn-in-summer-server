@@ -30,6 +30,9 @@ async function run() {
     const selectedClassCollection = client
       .db("learnInSummer")
       .collection("selectedClass");
+    const paymentsCollection = client
+      .db("learnInSummer")
+      .collection("payments");
 
     // get all classes
     app.get("/allClasses", async (req, res) => {
@@ -152,7 +155,7 @@ async function run() {
     app.post("/create-payment-intent", async (req, res) => {
       const { price } = req.body;
       const amount = price * 100;
-      console.log(amount)
+      console.log(amount);
 
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
@@ -163,6 +166,43 @@ async function run() {
       res.send({
         clientSecret: paymentIntent.client_secret,
       });
+    });
+
+    // saving payment info
+    app.post("/payments", async (req, res) => {
+      const paymentInfo = req.body;
+      const result = await paymentsCollection.insertOne(paymentInfo);
+
+      const selectedResult = await selectedClassCollection.updateOne(
+        { email: paymentInfo.student_email },
+        { $pull: { selectedClassIds: paymentInfo.classId } }
+      );
+      const increaseResult = await classesCollection.updateOne(
+        { _id: new ObjectId(paymentInfo.classId) },
+        { $inc: { enrolled: 1 } }
+      );
+
+      res.send(result);
+    });
+
+    // get enrolled classes
+    app.get("/getEnrolledClasses", async (req, res) => {
+      const email = req.query.email;
+      const paymentedItems = await paymentsCollection
+        .find({
+          student_email: email,
+        })
+        .toArray();
+
+      const enrolledClasses = await classesCollection
+        .find({
+          _id: {
+            $in: paymentedItems.map((item) => new ObjectId(item.classId)),
+          },
+        })
+        .toArray();
+
+      res.send(enrolledClasses);
     });
 
     // Send a ping to confirm a successful connectio
