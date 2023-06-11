@@ -1,8 +1,9 @@
 const express = require("express");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const app = express();
 const cors = require("cors");
 require("dotenv").config();
-const app = express();
+const stripe = require("stripe")(process.env.PAYMENT_SECRET_KEY);
 const PORT = process.env.PORT || 4000;
 
 app.use(cors());
@@ -135,6 +136,33 @@ async function run() {
         $pull: { selectedClassIds: id },
       });
       res.send(result);
+    });
+
+    app.get("/getSingleClass/:id", async (req, res) => {
+      const id = req.params.id;
+
+      const singleClass = await classesCollection.findOne({
+        _id: new ObjectId(id),
+      });
+
+      res.send(singleClass);
+    });
+
+    // *create payment intent
+    app.post("/create-payment-intent", async (req, res) => {
+      const { price } = req.body;
+      const amount = price * 100;
+      console.log(amount)
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "usd",
+        payment_method_types: ["card"],
+      });
+
+      res.send({
+        clientSecret: paymentIntent.client_secret,
+      });
     });
 
     // Send a ping to confirm a successful connectio
