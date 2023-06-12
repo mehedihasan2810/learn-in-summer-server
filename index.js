@@ -1,4 +1,5 @@
 const express = require("express");
+const morgan = require("morgan");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const app = express();
 const cors = require("cors");
@@ -6,6 +7,7 @@ require("dotenv").config();
 const stripe = require("stripe")(process.env.PAYMENT_SECRET_KEY);
 const PORT = process.env.PORT || 4000;
 
+app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json());
 
@@ -82,16 +84,31 @@ async function run() {
     app.post("/addUser", async (req, res) => {
       const userInfo = req.body;
       console.log(userInfo);
-      if (!userInfo.email) {
+      if (!userInfo.email || !userInfo.name) {
         return;
       }
       const getUser = await usersCollection.findOne({ email: userInfo.email });
-      console.log(getUser);
+      console.log("findAddUser ", getUser);
+
+      const ids = [];
+      const getUsers = await usersCollection.find().toArray();
+      const filteredUses = getUsers.reduce((acc, user) => {
+        if (!acc.includes(user.email)) {
+          acc.push(user.email);
+          ids.push(user._id);
+        }
+
+        return acc;
+      }, []);
+
+      const deletedResult = await usersCollection.deleteMany({
+        _id: { $nin: ids.map((id) => new ObjectId(id)) },
+      });
 
       if (!getUser) {
         const result = await usersCollection.insertOne(userInfo);
         res.send(result);
-        console.log(result);
+        console.log("addedUser ", result);
       } else {
         console.log("exist");
         res.send({ message: "user exist" });
@@ -110,11 +127,12 @@ async function run() {
         return;
       }
       const getUser = await usersCollection.findOne({ email: email });
-      console.log(getUser);
+      console.log("getUser", getUser);
       if (!getUser) {
         res.send({ success: false });
+      } else {
+        res.send(getUser);
       }
-      res.send(getUser);
     });
 
     app.post("/addSelectedClass", async (req, res) => {
@@ -131,10 +149,16 @@ async function run() {
 
     app.get("/getSelectedClassIds", async (req, res) => {
       const email = req.query.email;
-      console.log(email);
-      const result = await selectedClassCollection.findOne({ email });
-
-      res.send(result);
+      console.log("selectedIds ", email);
+      const result = await selectedClassCollection.findOne({ email: email });
+      if (!result) {
+        res.send({
+          email: email,
+          selectedClassIds: [],
+        });
+      } else {
+        res.send(result);
+      }
     });
     app.get("/getSelectedClass", async (req, res) => {
       const email = req.query.email;
@@ -210,7 +234,7 @@ async function run() {
       );
       const increaseResult = await classesCollection.updateOne(
         { _id: new ObjectId(paymentInfo.classId) },
-        { $inc: { enrolled: 1 } }
+        { $inc: { enrolled: 1, available_seats: -1 } }
       );
 
       res.send(result);
