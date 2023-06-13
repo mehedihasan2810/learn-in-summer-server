@@ -260,6 +260,70 @@ async function run() {
       res.send(enrolledClasses);
     });
 
+    app.put("/updateApproveStatus/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await classesCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { status: "approved" } }
+      );
+      console.log(console.log(result));
+      res.send(result);
+    });
+    app.put("/updateDenyStatus/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await classesCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { status: "denied" } }
+      );
+      console.log(console.log(result));
+      res.send(result);
+    });
+    app.put("/updateFeedback/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const feedback = req.body.message;
+      console.log(feedback);
+      const result = await classesCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { feedback: feedback } }
+      );
+      console.log(console.log(result));
+      res.send(result);
+    });
+
+    app.put("/updateUserRole/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const role = req.body.role;
+      console.log(role);
+
+      const result = await usersCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { role: role } }
+      );
+      res.send(result);
+    });
+
+    app.get("/getAInstructorClasses", async (req, res) => {
+      const email = req.query.email;
+      console.log(email);
+
+      const result = await classesCollection.find({ email: email }).toArray();
+      res.send(result);
+    });
+
+    app.get("/getPaymentDetails", async (req, res) => {
+      const email = req.query.email;
+      console.log(email);
+
+      const result = await paymentsCollection
+        .find({
+          student_email: email,
+        })
+        .toArray();
+      console.log(result);
+      res.send(result);
+    });
     // Send a ping to confirm a successful connectio
     await client.db("admin").command({ ping: 1 });
     console.log(
