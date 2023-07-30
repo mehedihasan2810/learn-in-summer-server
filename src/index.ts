@@ -6,7 +6,7 @@ const app: Express = express();
 const port = process.env.PORT || 5000;
 
 app.get("/", (_req: Request, res: Response) => {
-  return res.send("convertinggggggg");
+  return res.send("convert");
 });
 app.get("/hello", (_req: Request, res: Response) => {
   return res.send("helloooo");

@@ -14,6 +14,9 @@ app.get("/", (_req, res) => {
 app.get("/hello", (_req, res) => {
     return res.send("helloooo");
 });
+app.get("/checking", (_req, res) => {
+    return res.send("checkinggggggg");
+});
 app.listen(port, () => {
     console.log(`server is runnig at http://localhost:${port}`);
 });
