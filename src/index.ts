@@ -1,46 +1,58 @@
-import express, { Express, Request, Response } from "express";
+import express, {
+  Express,
+  Request,
+  Response,
+  NextFunction,
+  Errback,
+} from "express";
+import config from "./configs/config";
+import bodyParser from "body-parser";
+import cors from "cors";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 dotenv.config();
+import "./configs/db";
+import { userRouter } from "./routes/user.route";
+import { classesRouter } from "./routes/classes.route";
 
 const app: Express = express();
-const port = process.env.PORT || 5000;
+const PORT: string | number = config.app.port;
 
-app.get("/", (_req: Request, res: Response) => {
-  return res.send("convert");
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// jwt
+app.post("/jwt", (req: Request, res: Response) => {
+  const user = req.body;
+  const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET as string, {
+    expiresIn: "2h",
+  });
+
+  res.status(200).json({ token });
 });
-app.get("/hello", (_req: Request, res: Response) => {
-  return res.send("helloooo");
+
+// routes
+app.use(classesRouter);
+app.use(userRouter);
+
+// *not found route error handling
+app.use((_req: Request, res: Response, _next: NextFunction) => {
+  res.status(404).json({
+    message: "not found 404",
+  });
 });
-app.get("/checking", (_req: Request, res: Response) => {
-  return res.send("checkinggggggg");
+
+// *server error handling
+app.use((_err: Errback, _req: Request, res: Response, _next: NextFunction) => {
+  res.status(500).json({
+    message: "server error",
+  });
 });
 
-app.listen(port, () => {
-  console.log(`server is runnig at http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`server is running at http://localhost:${PORT}`);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // const express = require("express");
 // const morgan = require("morgan");

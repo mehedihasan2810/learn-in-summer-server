@@ -2,3 +2,4 @@ node_modules
 .env
 .vercel
 _info_.ts
+.husky

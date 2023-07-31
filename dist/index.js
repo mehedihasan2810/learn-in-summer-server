@@ -4,21 +4,45 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const config_1 = __importDefault(require("./configs/config"));
+const body_parser_1 = __importDefault(require("body-parser"));
+const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 dotenv_1.default.config();
+require("./configs/db");
+const user_route_1 = require("./routes/user.route");
+const classes_route_1 = require("./routes/classes.route");
 const app = (0, express_1.default)();
-const port = process.env.PORT || 5000;
-app.get("/", (_req, res) => {
-    return res.send("convertinggggggg");
+const PORT = config_1.default.app.port;
+app.use((0, cors_1.default)());
+app.use(body_parser_1.default.json());
+app.use(body_parser_1.default.urlencoded({ extended: true }));
+// jwt
+app.post("/jwt", (req, res) => {
+    const user = req.body;
+    const token = jsonwebtoken_1.default.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: "2h",
+    });
+    res.status(200).json({ token });
 });
-app.get("/hello", (_req, res) => {
-    return res.send("helloooo");
+// routes
+app.use(classes_route_1.classesRouter);
+app.use(user_route_1.userRouter);
+// *not found route error handling
+app.use((_req, res, _next) => {
+    res.status(404).json({
+        message: "not found 404",
+    });
 });
-app.get("/checking", (_req, res) => {
-    return res.send("checkinggggggg");
+// *server error handling
+app.use((_err, _req, res, _next) => {
+    res.status(500).json({
+        message: "server error",
+    });
 });
-app.listen(port, () => {
-    console.log(`server is runnig at http://localhost:${port}`);
+app.listen(PORT, () => {
+    console.log(`server is running at http://localhost:${PORT}`);
 });
 // const express = require("express");
 // const morgan = require("morgan");
