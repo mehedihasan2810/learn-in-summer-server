@@ -10,4 +10,7 @@ const payments_controller_1 = require("../controllers/payments.controller");
 const paymentsRouter = express_1.default.Router();
 exports.paymentsRouter = paymentsRouter;
 paymentsRouter.post("/create-payment-intent", verifyJWT_1.verifyJWT, payments_controller_1.createPaymentIntent);
+paymentsRouter.post("/payments", verifyJWT_1.verifyJWT, payments_controller_1.payments);
+paymentsRouter.get("/getPaymentDetails", verifyJWT_1.verifyJWT, payments_controller_1.getPaymentDetails);
+paymentsRouter.get("/getEnrolledClasses", verifyJWT_1.verifyJWT, payments_controller_1.getEnrolledClasses);
 //# sourceMappingURL=payments.route.js.map

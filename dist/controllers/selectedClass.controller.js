@@ -18,7 +18,7 @@ const classes_model_1 = __importDefault(require("../models/classes.model"));
 const addSelectedClass = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, id } = req.body;
-        const result = yield selectedClass_model_1.default.updateOne({ email }, { $push: { selectedClassIds: id } }, { upsert: true });
+        const result = yield selectedClass_model_1.default.findOneAndUpdate({ email }, { $push: { selectedClassIds: id } }, { new: true, upsert: true, rawResult: true });
         res.status(201).json(result);
     }
     catch (error) {

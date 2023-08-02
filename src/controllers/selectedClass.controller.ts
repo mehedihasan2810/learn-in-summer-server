@@ -6,10 +6,10 @@ export const addSelectedClass = async (req: Request, res: Response) => {
   try {
     const { email, id } = req.body;
 
-    const result = await SelectedClass.updateOne(
+    const result = await SelectedClass.findOneAndUpdate(
       { email },
       { $push: { selectedClassIds: id } },
-      { upsert: true }
+      { new: true, upsert: true, rawResult: true }
     );
 
     res.status(201).json(result);
@@ -76,4 +76,3 @@ export const deleteSelectedClass = async (req: Request, res: Response) => {
     res.status(500).send((error as Error).message);
   }
 };
-

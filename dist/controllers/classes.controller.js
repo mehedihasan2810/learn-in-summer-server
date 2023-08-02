@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSingleClass = exports.deleteClass = exports.updateClass = exports.addClass = exports.getClass = exports.allClasses = void 0;
+exports.getAInstructorClasses = exports.updateFeedback = exports.updateDenyStatus = exports.updateApproveStatus = exports.getSingleClass = exports.deleteClass = exports.updateClass = exports.addClass = exports.getClass = exports.allClasses = void 0;
 const classes_model_1 = __importDefault(require("../models/classes.model"));
 const allClasses = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -90,4 +90,49 @@ const getSingleClass = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getSingleClass = getSingleClass;
+const updateApproveStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = req.params.id;
+        const result = yield classes_model_1.default.findByIdAndUpdate({ _id: id }, { status: "approved" }, { new: true, upsert: false, rawResult: true });
+        res.status(200).json(result);
+    }
+    catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+exports.updateApproveStatus = updateApproveStatus;
+const updateDenyStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = req.params.id;
+        const result = yield classes_model_1.default.findByIdAndUpdate({ _id: id }, { status: "denied" }, { new: true, upsert: false, rawResult: true });
+        res.status(200).json(result);
+    }
+    catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+exports.updateDenyStatus = updateDenyStatus;
+const updateFeedback = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = req.params.id;
+        const feedback = req.body.message;
+        const result = yield classes_model_1.default.findByIdAndUpdate({ _id: id }, { feedback: feedback }, { new: true, upsert: false, rawResult: true });
+        res.status(200).json(result);
+    }
+    catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+exports.updateFeedback = updateFeedback;
+const getAInstructorClasses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const email = req.query.email;
+        const result = yield classes_model_1.default.find({ email: email });
+        res.status(200).json(result);
+    }
+    catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+exports.getAInstructorClasses = getAInstructorClasses;
 //# sourceMappingURL=classes.controller.js.map

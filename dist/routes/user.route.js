@@ -11,4 +11,5 @@ exports.userRouter = userRouter;
 userRouter.post("/addUser", user_controller_1.addUser);
 userRouter.get("/getUsers", user_controller_1.getUsers);
 userRouter.get("/getUser", user_controller_1.getUser);
+userRouter.put("/updateUserRole/:id", user_controller_1.updateUserRole);
 //# sourceMappingURL=user.route.js.map

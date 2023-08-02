@@ -69,3 +69,18 @@ export const getUser = async (req: Request, res: Response) => {
     res.status(500).send({ success: false, message: (error as Error).message });
   }
 };
+export const updateUserRole = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const role = req.body.role;
+
+    const result = await Users.findByIdAndUpdate(
+      { _id: id },
+      { role: role },
+      { new: true, upsert: false, rawResult: true }
+    );
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).send({ success: false, message: (error as Error).message });
+  }
+};

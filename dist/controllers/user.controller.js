@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUser = exports.getUsers = exports.addUser = void 0;
+exports.updateUserRole = exports.getUser = exports.getUsers = exports.addUser = void 0;
 const users_model_1 = __importDefault(require("../models/users.model"));
 const addUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -78,4 +78,16 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getUser = getUser;
+const updateUserRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = req.params.id;
+        const role = req.body.role;
+        const result = yield users_model_1.default.findByIdAndUpdate({ _id: id }, { role: role }, { new: true, upsert: false, rawResult: true });
+        res.status(200).json(result);
+    }
+    catch (error) {
+        res.status(500).send({ success: false, message: error.message });
+    }
+});
+exports.updateUserRole = updateUserRole;
 //# sourceMappingURL=user.controller.js.map

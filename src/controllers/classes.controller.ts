@@ -77,3 +77,56 @@ export const getSingleClass = async (req: Request, res: Response) => {
     res.status(500).send((error as Error).message);
   }
 };
+
+export const updateApproveStatus = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const result = await Classes.findByIdAndUpdate(
+      { _id: id },
+      { status: "approved" },
+      { new: true, upsert: false, rawResult: true }
+    );
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).send((error as Error).message);
+  }
+};
+
+export const updateDenyStatus = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const result = await Classes.findByIdAndUpdate(
+      { _id: id },
+      { status: "denied" },
+      { new: true, upsert: false, rawResult: true }
+    );
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).send((error as Error).message);
+  }
+};
+
+export const updateFeedback = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const feedback = req.body.message;
+    const result = await Classes.findByIdAndUpdate(
+      { _id: id },
+      { feedback: feedback },
+      { new: true, upsert: false, rawResult: true }
+    );
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).send((error as Error).message);
+  }
+};
+export const getAInstructorClasses = async (req: Request, res: Response) => {
+  try {
+    const email = req.query.email;
+
+    const result = await Classes.find({ email: email });
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).send((error as Error).message);
+  }
+};
