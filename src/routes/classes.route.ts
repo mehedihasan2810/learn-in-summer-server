@@ -6,6 +6,7 @@ import {
   getClass,
   updateClass,
 } from "../controllers/classes.controller";
+import { verifyJWT } from "../middlewares/verifyJWT";
 
 const classesRouter = express.Router();
 
@@ -13,6 +14,6 @@ classesRouter.get("/allClasses", allClasses);
 classesRouter.get("/getClass/:id", getClass);
 classesRouter.post("/addClass", addClass);
 classesRouter.put("/updateClass/:id", updateClass);
-classesRouter.delete("/deleteClass/:id", deleteClass);
+classesRouter.delete("/deleteClass/:id", verifyJWT, deleteClass);
 
 export { classesRouter };

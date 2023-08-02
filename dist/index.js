@@ -13,6 +13,7 @@ dotenv_1.default.config();
 require("./configs/db");
 const user_route_1 = require("./routes/user.route");
 const classes_route_1 = require("./routes/classes.route");
+const selectedClass_route_1 = require("./routes/selectedClass.route");
 const app = (0, express_1.default)();
 const PORT = config_1.default.app.port;
 app.use((0, cors_1.default)());
@@ -29,6 +30,7 @@ app.post("/jwt", (req, res) => {
 // routes
 app.use(classes_route_1.classesRouter);
 app.use(user_route_1.userRouter);
+app.use(selectedClass_route_1.selectedClassRouter);
 // *not found route error handling
 app.use((_req, res, _next) => {
     res.status(404).json({
