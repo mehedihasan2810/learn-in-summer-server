@@ -63,3 +63,17 @@ export const deleteClass = async (req: Request, res: Response) => {
     res.status(500).send((error as Error).message);
   }
 };
+
+export const getSingleClass = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    const singleClass = await Classes.findOne({
+      _id: id,
+    });
+
+    res.status(200).json(singleClass);
+  } catch (error) {
+    res.status(500).send((error as Error).message);
+  }
+};

@@ -14,4 +14,5 @@ classesRouter.get("/getClass/:id", classes_controller_1.getClass);
 classesRouter.post("/addClass", classes_controller_1.addClass);
 classesRouter.put("/updateClass/:id", classes_controller_1.updateClass);
 classesRouter.delete("/deleteClass/:id", verifyJWT_1.verifyJWT, classes_controller_1.deleteClass);
+classesRouter.get("/getSingleClass/:id", classes_controller_1.getSingleClass);
 //# sourceMappingURL=classes.route.js.map

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSelectedClass = exports.getSelectedClassIds = exports.addSelectedClass = void 0;
+exports.deleteSelectedClass = exports.getSelectedClass = exports.getSelectedClassIds = exports.addSelectedClass = void 0;
 const selectedClass_model_1 = __importDefault(require("../models/selectedClass.model"));
 const classes_model_1 = __importDefault(require("../models/classes.model"));
 const addSelectedClass = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -68,4 +68,20 @@ const getSelectedClass = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.getSelectedClass = getSelectedClass;
+const deleteSelectedClass = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    try {
+        const email = (_a = req.query) === null || _a === void 0 ? void 0 : _a.email;
+        const id = (_b = req.query) === null || _b === void 0 ? void 0 : _b.id;
+        const query = { email };
+        const result = yield selectedClass_model_1.default.findOneAndUpdate(query, {
+            $pull: { selectedClassIds: id },
+        }, { new: true, upsert: false, rawResult: true });
+        res.status(200).json(result);
+    }
+    catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+exports.deleteSelectedClass = deleteSelectedClass;
 //# sourceMappingURL=selectedClass.controller.js.map

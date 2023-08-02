@@ -15,6 +15,7 @@ import "./configs/db";
 import { userRouter } from "./routes/user.route";
 import { classesRouter } from "./routes/classes.route";
 import { selectedClassRouter } from "./routes/selectedClass.route";
+import { paymentsRouter } from "./routes/payments.route";
 
 const app: Express = express();
 const PORT: string | number = config.app.port;
@@ -37,6 +38,7 @@ app.post("/jwt", (req: Request, res: Response) => {
 app.use(classesRouter);
 app.use(userRouter);
 app.use(selectedClassRouter);
+app.use(paymentsRouter);
 
 // *not found route error handling
 app.use((_req: Request, res: Response, _next: NextFunction) => {

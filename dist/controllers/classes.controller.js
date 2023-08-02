@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteClass = exports.updateClass = exports.addClass = exports.getClass = exports.allClasses = void 0;
+exports.getSingleClass = exports.deleteClass = exports.updateClass = exports.addClass = exports.getClass = exports.allClasses = void 0;
 const classes_model_1 = __importDefault(require("../models/classes.model"));
 const allClasses = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -77,4 +77,17 @@ const deleteClass = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.deleteClass = deleteClass;
+const getSingleClass = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = req.params.id;
+        const singleClass = yield classes_model_1.default.findOne({
+            _id: id,
+        });
+        res.status(200).json(singleClass);
+    }
+    catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+exports.getSingleClass = getSingleClass;
 //# sourceMappingURL=classes.controller.js.map

@@ -46,6 +46,7 @@ export const getSelectedClass = async (req: Request, res: Response) => {
       res.status(200).json([]);
       return;
     }
+
     const objectId = selectedResult?.selectedClassIds.map((id: string) => id);
     const result = await Classes.find({
       _id: {
@@ -57,3 +58,22 @@ export const getSelectedClass = async (req: Request, res: Response) => {
     res.status(500).send((error as Error).message);
   }
 };
+
+export const deleteSelectedClass = async (req: Request, res: Response) => {
+  try {
+    const email = req.query?.email;
+    const id = req.query?.id;
+    const query = { email };
+    const result = await SelectedClass.findOneAndUpdate(
+      query,
+      {
+        $pull: { selectedClassIds: id },
+      },
+      { new: true, upsert: false, rawResult: true }
+    );
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).send((error as Error).message);
+  }
+};
+

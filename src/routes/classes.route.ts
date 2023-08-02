@@ -4,6 +4,7 @@ import {
   allClasses,
   deleteClass,
   getClass,
+  getSingleClass,
   updateClass,
 } from "../controllers/classes.controller";
 import { verifyJWT } from "../middlewares/verifyJWT";
@@ -15,5 +16,6 @@ classesRouter.get("/getClass/:id", getClass);
 classesRouter.post("/addClass", addClass);
 classesRouter.put("/updateClass/:id", updateClass);
 classesRouter.delete("/deleteClass/:id", verifyJWT, deleteClass);
+classesRouter.get("/getSingleClass/:id", getSingleClass);
 
 export { classesRouter };
