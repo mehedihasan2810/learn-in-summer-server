@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import Classes from "../models/classes.model";
+
+// Endpoint: Get all classes
 export const allClasses = async (_req: Request, res: Response) => {
   try {
     const classes = await Classes.find();
@@ -9,6 +11,7 @@ export const allClasses = async (_req: Request, res: Response) => {
   }
 };
 
+// Endpoint: Get a specific class by ID
 export const getClass = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
@@ -21,6 +24,7 @@ export const getClass = async (req: Request, res: Response) => {
   }
 };
 
+// Endpoint: Add a new class
 export const addClass = async (req: Request, res: Response) => {
   try {
     const classInfo = req.body;
@@ -34,6 +38,7 @@ export const addClass = async (req: Request, res: Response) => {
   }
 };
 
+// Endpoint: Update a class by ID
 export const updateClass = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
@@ -52,6 +57,7 @@ export const updateClass = async (req: Request, res: Response) => {
   }
 };
 
+// Endpoint: Delete a class by ID
 export const deleteClass = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
@@ -64,6 +70,7 @@ export const deleteClass = async (req: Request, res: Response) => {
   }
 };
 
+// Endpoint: Get a single class by ID
 export const getSingleClass = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
@@ -78,6 +85,7 @@ export const getSingleClass = async (req: Request, res: Response) => {
   }
 };
 
+// Endpoint: Update the approval status of a class by ID
 export const updateApproveStatus = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
@@ -92,6 +100,7 @@ export const updateApproveStatus = async (req: Request, res: Response) => {
   }
 };
 
+// Endpoint: Update the denial status of a class by ID
 export const updateDenyStatus = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
@@ -106,6 +115,7 @@ export const updateDenyStatus = async (req: Request, res: Response) => {
   }
 };
 
+// Endpoint: Update the feedback message of a class by ID
 export const updateFeedback = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
@@ -120,6 +130,8 @@ export const updateFeedback = async (req: Request, res: Response) => {
     res.status(500).send((error as Error).message);
   }
 };
+
+// Endpoint: Get all classes associated with a specific instructor's email
 export const getAInstructorClasses = async (req: Request, res: Response) => {
   try {
     const email = req.query.email;

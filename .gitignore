@@ -3,3 +3,4 @@ node_modules
 .vercel
 _info_.ts
 .husky
+dist

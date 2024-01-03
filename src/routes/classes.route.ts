@@ -13,8 +13,10 @@ import {
 } from "../controllers/classes.controller";
 import { verifyJWT } from "../middlewares/verifyJWT";
 
+// Creating an Express Router instance
 const classesRouter = express.Router();
 
+// Defining routes and associating them with corresponding controller functions
 classesRouter.get("/allClasses", allClasses);
 classesRouter.get("/getClass/:id", getClass);
 classesRouter.post("/addClass", addClass);
